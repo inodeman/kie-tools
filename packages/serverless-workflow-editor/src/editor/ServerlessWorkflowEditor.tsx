@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -31,7 +31,15 @@ import mermaid from "mermaid";
 import { SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
 import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
 import { MonacoEditorOperation } from "../monaco/SwfMonacoEditorApi";
-import { EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  EditorEnvelopeLocator,
+  EditorTheme,
+  EnvelopeMapping,
+  StateControlCommand,
+} from "@kie-tools-core/editor/dist/api";
+import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 
 interface Props {
   /**
@@ -62,6 +70,8 @@ interface Props {
    * @param notifications List of Notifications
    */
   setNotifications: (path: string, notifications: Notification[]) => void;
+
+  envelopeLocator: EditorEnvelopeLocator;
 }
 
 export type ServerlessWorkflowEditorRef = {
@@ -160,15 +170,50 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     onContentChanged(initialContent.originalContent);
   }, [initialContent, onContentChanged, props.onReady]);
 
+  /**
+   * The reference of the Editor. It allows us to access/modify the Editor properties imperatively.
+   */
+  const { editor, editorRef } = useEditorRef();
+
+  /**
+   * State that handles the file. It's important to type with the File type of the @kie-tools/dist/embedded.
+   * It's initialized with an empty file with the dmn extension. The file is used by the EmbeddedEditor to set the content on the Editor. Updating the file will trigger a re-render on the Editor because the EmbeddedEditor will set updated content on the Editor.
+   */
+  const [file, setFile] = useState<EmbeddedEditorFile>({
+    fileName: "new-file",
+    fileExtension: "sw.json",
+    getFileContents: () =>
+      Promise.resolve(
+        '{\n  "id": "helloworld",\n  "version": "1.0",\n  "specVersion": "0.8",\n  "name": "Hello World Workflow",\n  "description": "Inject Hello World",\n  "start": "Hello State",\n  "states": [\n    {\n      "name": "Hello State",\n      "type": "inject",\n      "data": {\n        "result": "Hello World!"\n      },\n      "end": true\n    }\n  ]\n}'
+      ),
+    isReadOnly: false,
+  });
+
+  /**
+   * The Editor envelope locator informs the EmbeddedEditor what file extension the Editor can open, and it maps to the respective envelope path and the Editor resources (like CSS, icons, etc).
+   * On this example, we're using a local envelope. To do this, it's necessary to copy the files from the @kie-tools/kie-bc-editors-unpacked on the webpack.config
+   */
+  //
+  const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(() => {
+    return new EditorEnvelopeLocator(window.location.origin, [
+      new EnvelopeMapping(
+        "sw",
+        "**/*.sw.+(json|yml|yaml)",
+        "dist/webview/SWEditorEnvelopeApp.js",
+        "dist/webview/editors/sw"
+      ),
+    ]);
+  }, []);
+
   const panelContent = (
     <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
-      <DrawerPanelBody>
-        <div
-          style={{ height: "100%", textAlign: "center", opacity: diagramOutOfSync ? 0.5 : 1 }}
-          ref={svgContainer}
-          className={"mermaid"}
-        />
-      </DrawerPanelBody>
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        editorEnvelopeLocator={props.envelopeLocator}
+        channelType={ChannelType.EMBEDDED}
+        locale={"en"}
+      />
     </DrawerPanelContent>
   );
 
@@ -186,6 +231,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           )}
         </DrawerContentBody>
       </DrawerContent>
+      Check to see where the Embedded Editor fits End of Where Embedded Editor goes
     </Drawer>
   );
 };

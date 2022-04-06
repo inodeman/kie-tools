@@ -14,6 +14,52 @@
  * limitations under the License.
  */
 
+//import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
+//import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
+//import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+//import { I18n } from "@kie-tools-core/i18n/dist/core";
+//import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
+//import * as vscode from "vscode";
+
+//let backendProxy: VsCodeBackendProxy;
+
+//export function activate(context: vscode.ExtensionContext) {
+//  console.info("Extension is alive.");
+//
+//  const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
+//  backendProxy = new VsCodeBackendProxy(context, backendI18n);
+
+//  KogitoVsCode.startExtension({
+//    extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
+//    context: context,
+//    viewType: "kieKogitoWebviewEditorsServerlessWorkflow",
+//    generateSvgCommandId: "extension.kogito.getPreviewSvgSw",
+//    silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgSw",
+//    editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
+// new EnvelopeMapping(
+//     "bpmn",
+//     "**/*.bpmn?(2)",
+//     "dist/webview/BpmnEditorEnvelopeApp.js",
+//     "dist/webview/editors/bpmn"
+// ),
+
+//      new EnvelopeMapping(
+//        "sw",
+//        "**/*.sw.+(json|yml|yaml)",
+//        "dist/webview/ServerlessWorkflowEditorEnvelopeApp.js",
+//        "dist/webview/editors/sw"
+//      ),
+//    ]),
+//    backendProxy: backendProxy,
+//  });
+//
+//  console.info("Extension is successfully setup.");
+//}
+//
+//export function deactivate() {
+//  backendProxy?.stopServices();
+//}
+
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";

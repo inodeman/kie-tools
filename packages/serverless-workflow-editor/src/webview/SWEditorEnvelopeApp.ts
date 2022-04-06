@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-export const editors = {
-  dmn: {
-    id: "DMNDiagramEditor",
-    name: "org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp",
-  },
-  bpmn: {
-    id: "BPMNDiagramEditor",
-    name: "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor",
-  },
-  scesim: {
-    id: "ScenarioSimulationEditor",
-    name: "org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime",
-  },
-  sw: {
-    id: "SWDiagramEditor",
-    name: "org.kie.workbench.common.stunner.sw.KogitoSWEditor",
-  },
-};
+import { VsCodeSWEditorFactory } from "@kie-tools/kie-bc-editors/dist/sw/envelope/vscode";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+
+declare const acquireVsCodeApi: any;
+console.log("Attempting to init GWT App");
+EditorEnvelope.init({
+  container: document.getElementById("envelope-app")!,
+  bus: acquireVsCodeApi(),
+  editorFactory: new VsCodeSWEditorFactory({ shouldLoadResourcesDynamically: true }),
+});

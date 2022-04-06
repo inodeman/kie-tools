@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
+const swEditor = require("@kie-tools/serverless-workflow-diagram-editor");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
@@ -43,8 +45,19 @@ module.exports = async (env) => [
     target: "web",
     entry: {
       "webview/ServerlessWorkflowEditorEnvelopeApp": "./src/webview/ServerlessWorkflowEditorEnvelopeApp.ts",
+      "webview/SWEditorEnvelopeApp": "./src/webview/SWEditorEnvelopeApp.ts",
     },
     plugins: [
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: swEditor.swEditorPath(),
+            to: "webview/editors/sw",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+        ],
+      }),
+
       new MonacoWebpackPlugin({
         languages: ["json"],
         customLanguages: [

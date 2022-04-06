@@ -89,14 +89,26 @@ export class KogitoEditorEnvelopeApiImpl<
     this.view().setLoading();
 
     const editorContent = await this.args.envelopeContext.channelApi.requests.kogitoEditor_contentRequest();
+    console.debug("Calling SetContent ------>");
+    console.debug("Calling SetContent this.editor ------>" + this.editor);
 
     await this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
-      .catch((e) => this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError.send(editorContent))
-      .finally(() => this.view().setLoadingFinished());
+      .catch((e) => {
+        console.debug("Catching SetContent Error ------>" + e);
 
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError.send(editorContent);
+      })
+      .finally(() => {
+        console.debug("Calling SetLoading Finished ------>");
+
+        this.view().setLoadingFinished();
+      });
+
+    console.debug("Calling RegisterDefaultShortcuts ------>");
     this.registerDefaultShortcuts(initArgs);
 
+    console.debug("Calling KogitoEditor Ready Send ------>");
     this.args.envelopeContext.channelApi.notifications.kogitoEditor_ready.send();
   };
 

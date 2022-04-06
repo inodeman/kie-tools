@@ -56,6 +56,7 @@ export class KogitoEditorFactory {
   ) {}
 
   public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditableDocument) {
+    console.log("Configured LocalResourceRoots: " + this.context.extensionUri);
     webviewPanel.webview.options = {
       enableCommandUris: true,
       enableScripts: true,

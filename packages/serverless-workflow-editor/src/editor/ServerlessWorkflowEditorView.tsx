@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Editor, EditorApi, EditorTheme, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import {
+  Editor,
+  EditorApi,
+  EditorEnvelopeLocator,
+  EditorTheme,
+  KogitoEditorEnvelopeContextType,
+} from "@kie-tools-core/editor/dist/api";
 import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
@@ -22,12 +28,20 @@ import { ServerlessWorkflowEditorChannelApi } from "./ServerlessWorkflowEditorCh
 
 export class ServerlessWorkflowEditorView implements Editor {
   private readonly editorRef: React.RefObject<EditorApi>;
+  private envelopeLocator: EditorEnvelopeLocator;
   public af_isReact = true;
   public af_componentId: "serverless-workflow-editor";
   public af_componentTitle: "Serverless Workflow Editor";
 
-  constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>) {
+  constructor(
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>,
+    envelopeLocator: EditorEnvelopeLocator
+  ) {
     this.editorRef = React.createRef<EditorApi>();
+    this.envelopeLocator = envelopeLocator;
+    console.log("Envelope 2: " + envelopeLocator.targetOrigin);
+    console.log("Envelope 2: " + envelopeLocator.envelopeMappings);
+    console.log("Envelope 2: " + envelopeLocator);
   }
 
   public async getElementPosition() {
@@ -58,6 +72,7 @@ export class ServerlessWorkflowEditorView implements Editor {
         setNotifications={(path, notifications) =>
           this.envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(path, notifications)
         }
+        envelopeLocator={this.envelopeLocator}
       />
     );
   }

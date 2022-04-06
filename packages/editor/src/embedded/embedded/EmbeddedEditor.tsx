@@ -90,6 +90,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
     return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
       ...props,
       kogitoEditor_ready: () => {
+        console.log("EmbeddedEditor.tsx:::Setting up KogitoEditorChanelApiImpl");
         setReady(true);
         props.kogitoEditor_ready?.();
       },

@@ -16,6 +16,7 @@
 import { ServerlessWorkflowEditorView } from "./ServerlessWorkflowEditorView";
 import {
   Editor,
+  EditorEnvelopeLocator,
   EditorFactory,
   EditorInitArgs,
   KogitoEditorEnvelopeContextType,
@@ -23,10 +24,17 @@ import {
 import { ServerlessWorkflowEditorChannelApi } from "./ServerlessWorkflowEditorChannelApi";
 
 export class ServerlessWorkflowEditorFactory implements EditorFactory<Editor, ServerlessWorkflowEditorChannelApi> {
+  private envelopeLocator: EditorEnvelopeLocator;
+
+  constructor(envelopeLocator: EditorEnvelopeLocator) {
+    this.envelopeLocator = envelopeLocator;
+    console.log("Envelope is: " + envelopeLocator.targetOrigin);
+  }
+
   public async createEditor(
     ctx: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
-    return new ServerlessWorkflowEditorView(ctx);
+    return new ServerlessWorkflowEditorView(ctx, this.envelopeLocator);
   }
 }

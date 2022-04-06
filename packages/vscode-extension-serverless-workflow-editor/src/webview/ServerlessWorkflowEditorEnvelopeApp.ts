@@ -14,13 +14,36 @@
  * limitations under the License.
  */
 
+//import { VsCodeSWEditorFactory } from "@kie-tools/kie-bc-editors/dist/sw/envelope/vscode";
+//import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+
+//declare const acquireVsCodeApi: any;
+
+EditorEnvelope.init({
+  container: document.getElementById("envelope-app")!,
+  bus: acquireVsCodeApi(),
+  editorFactory: new VsCodeSWEditorFactory({ shouldLoadResourcesDynamically: true }),
+});
+
 import { ServerlessWorkflowEditorFactory } from "@kie-tools/serverless-workflow-editor";
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { VsCodeSWEditorFactory } from "@kie-tools/kie-bc-editors/dist/sw/envelope/vscode";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { useMemo } from "react";
 
 declare const acquireVsCodeApi: any;
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  editorFactory: new ServerlessWorkflowEditorFactory(),
+  editorFactory: new ServerlessWorkflowEditorFactory(
+    new EditorEnvelopeLocator("vscode", [
+      new EnvelopeMapping(
+        "sw",
+        "**/*.sw.+(json|yml|yaml)",
+        "dist/webview/SWEditorEnvelopeApp.js",
+        "dist/webview/editors/sw"
+      ),
+    ])
+  ),
 });

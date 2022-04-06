@@ -19,11 +19,11 @@
 
 //declare const acquireVsCodeApi: any;
 
-EditorEnvelope.init({
-  container: document.getElementById("envelope-app")!,
-  bus: acquireVsCodeApi(),
-  editorFactory: new VsCodeSWEditorFactory({ shouldLoadResourcesDynamically: true }),
-});
+//EditorEnvelope.init({
+//  container: document.getElementById("envelope-app")!,
+//  bus: acquireVsCodeApi(),
+//  editorFactory: new VsCodeSWEditorFactory({ shouldLoadResourcesDynamically: true }),
+//});
 
 import { ServerlessWorkflowEditorFactory } from "@kie-tools/serverless-workflow-editor";
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";

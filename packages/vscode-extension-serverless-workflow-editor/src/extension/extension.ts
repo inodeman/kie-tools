@@ -89,7 +89,7 @@ export function activate(context: vscode.ExtensionContext) {
         "sw",
         "**/*.sw.+(json|yml|yaml)",
         "dist/webview/ServerlessWorkflowEditorEnvelopeApp.js",
-        "dist/webview/editors/serverless-workflow"
+        "dist/webview/editors/sw"
       ),
     ]),
     channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({ settings }),

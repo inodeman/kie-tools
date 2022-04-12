@@ -180,13 +180,13 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
    * It's initialized with an empty file with the dmn extension. The file is used by the EmbeddedEditor to set the content on the Editor. Updating the file will trigger a re-render on the Editor because the EmbeddedEditor will set updated content on the Editor.
    */
   const [file, setFile] = useState<EmbeddedEditorFile>({
-    fileName: "new-file",
+    fileName: "new",
     fileExtension: "sw.json",
     getFileContents: () =>
       Promise.resolve(
         '{\n  "id": "helloworld",\n  "version": "1.0",\n  "specVersion": "0.8",\n  "name": "Hello World Workflow",\n  "description": "Inject Hello World",\n  "start": "Hello State",\n  "states": [\n    {\n      "name": "Hello State",\n      "type": "inject",\n      "data": {\n        "result": "Hello World!"\n      },\n      "end": true\n    }\n  ]\n}'
       ),
-    isReadOnly: false,
+    isReadOnly: true,
   });
 
   /**

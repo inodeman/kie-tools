@@ -21,8 +21,12 @@ export function useEditorRef() {
   const [editor, setEditor] = useState<EmbeddedEditorRef | undefined>(undefined);
 
   const editorRef = useCallback((node: EmbeddedEditorRef) => {
+    console.log("Using Hook Editor Ref");
     if (node) {
+      console.log("Using Hook Editor Ref Setting Editor");
       setEditor(node);
+    } else {
+      console.log("Using Hook Editor Ref Not Setting Editor");
     }
   }, []);
   return { editor, editorRef };

@@ -67,6 +67,12 @@ export class KogitoEditorEnvelopeApiImpl<
   }
 
   public kogitoEditor_initRequest = async (association: Association, initArgs: EditorInitArgs) => {
+    console.log(
+      "KogitoEditorEnvelopeApiImpl:::kogitoEditor_initRequest origin ------>" +
+        association.origin +
+        " ----- " +
+        association.envelopeServerId
+    );
     this.args.envelopeClient.associate(association.origin, association.envelopeServerId);
 
     if (this.hasCapturedInitRequestYet()) {

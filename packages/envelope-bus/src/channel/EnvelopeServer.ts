@@ -65,7 +65,13 @@ export class EnvelopeServer<
       "EnvelopeServer"
     )
   ) {
+    console.log("Building EnvelopeServer ---------->");
+    console.log("Building EnvelopeServer ----------> origin: " + origin);
+    console.log("Building EnvelopeServer ----------> type: " + type);
+    console.log("Building EnvelopeServer ----------> manager: " + manager);
+
     this.id = this.generateRandomId();
+    console.log("Building EnvelopeServer ----------> id: " + this.id);
   }
 
   public startInitPolling(apiImpl: ApiToProvide) {
@@ -76,6 +82,13 @@ export class EnvelopeServer<
     });
 
     this.manager.currentApiImpl = apiImpl;
+    console.log("Current API: ", apiImpl);
+
+    let output = "";
+    for (const property in apiImpl) {
+      output += property + ": " + apiImpl[property] + "; ";
+    }
+    console.log("expanded...." + output);
 
     // Set intervals and timeout only after first poll.
     this.initialPollingSetting = setTimeout(() => {
@@ -104,21 +117,31 @@ export class EnvelopeServer<
     message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
     apiImpl: ApiToProvide
   ) {
+    console.log("EnvelopeServer:::receive message:" + message);
+    console.log("EnvelopeServer:::receive apiImpl:" + apiImpl);
+
+    console.log("EnvelopeServer:::receive message gps 1");
     if (message.directSender === EnvelopeBusMessageDirectSender.ENVELOPE_SERVER) {
       // When a message came from another EnvelopeServer, it should be ignored
+      console.log("EnvelopeServer:::receive message gps 2");
       return;
     }
 
+    console.log("EnvelopeServer:::receive message gps 3");
     if (message.targetEnvelopeId) {
+      console.log("EnvelopeServer:::receive message gps 4");
       // When the message has a targetEnvelopeId, it was directed to a specific envelope,
       // thus the channel should ignore it.
       return;
     }
 
+    console.log("EnvelopeServer:::receive message gps 5");
     if (message.targetEnvelopeServerId === this.id) {
+      console.log("EnvelopeServer:::receive message gps 6");
       // Message was sent directly from the Envelope to this EnvelopeServer
       this.manager.server.receive(message, apiImpl);
     } else if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
+      console.log("EnvelopeServer:::receive message gps 7");
       // Message was sent from any Envelope to some EnvelopeServer, so it should be forwarded to this Envelope
       this.manager.server.receive(message, {} as any);
     }

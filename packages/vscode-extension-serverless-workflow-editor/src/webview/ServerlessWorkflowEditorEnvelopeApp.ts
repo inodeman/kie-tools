@@ -37,7 +37,7 @@ EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
   editorFactory: new ServerlessWorkflowEditorFactory(
-    new EditorEnvelopeLocator("vscode", [
+    new EditorEnvelopeLocator(window.location.origin, [
       new EnvelopeMapping(
         "sw",
         "**/*.sw.+(json|yml|yaml)",

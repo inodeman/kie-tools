@@ -33,9 +33,16 @@ export class EditorEnvelopeLocator {
   constructor(public readonly targetOrigin: string, public readonly envelopeMappings: EnvelopeMapping[]) {}
 
   public getEnvelopeMapping(path: string) {
-    return this.envelopeMappings.find((mapping) => {
-      return mapping.matcher.match(path);
+    console.log("EditorEnvelopeLocator:::getEnvelopeMapping path: " + path);
+
+    const returnValue = this.envelopeMappings.find((mapping) => {
+      const returnMapper = mapping.matcher.match(path);
+      console.log("EditorEnvelopeLocator:::getEnvelopeMapping returnMapper: " + returnMapper);
+      return returnMapper;
     });
+    console.log("EditorEnvelopeLocator:::getEnvelopeMapping returnValue: " + returnValue);
+
+    return returnValue;
   }
 
   public hasMappingFor(path: string) {

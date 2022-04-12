@@ -87,7 +87,8 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
 
   //Setup envelope bus communication
   const kogitoEditorChannelApiImpl = useMemo(() => {
-    return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
+    console.log("Creating KogitoEditorChannelApi ---->");
+    const returnObject = new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
       ...props,
       kogitoEditor_ready: () => {
         console.log("EmbeddedEditor.tsx:::Setting up KogitoEditorChanelApiImpl");
@@ -95,14 +96,30 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
         props.kogitoEditor_ready?.();
       },
     });
+    console.log("KogitoEditorChannelApi created 2 ---------->" + returnObject);
+    return returnObject;
   }, [stateControl, props]);
 
+  const someRandomStuff = useMemo(() => {
+    console.log("SomeRandomStuff ------>");
+    return "kogito-iiframe";
+  }, []);
   const envelopeServer = useMemo(() => {
-    return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
+    console.log("Creating Envelope Server ---->");
+    console.log("Creating Envelope Server envelopeMapping ---->" + envelopeMapping?.resourcesPathPrefix);
+    const returnObject = new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
       { postMessage: (message) => iframeRef.current?.contentWindow?.postMessage(message, "*") },
       props.editorEnvelopeLocator.targetOrigin,
-      (self) =>
-        self.envelopeApi.requests.kogitoEditor_initRequest(
+      (self) => {
+        console.log("Creating Envelope Server calling kogitoEditor_initRequest---->");
+        console.log(
+          "Creating Envelope Server calling kogitoEditor_initRequest params origin: " +
+            self.origin +
+            " ----- " +
+            self.id
+        );
+
+        return self.envelopeApi.requests.kogitoEditor_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
           {
             fileExtension: props.file.fileExtension,
@@ -111,8 +128,15 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
             isReadOnly: props.file.isReadOnly,
             channel: props.channelType,
           }
-        )
+        );
+      }
     );
+    console.log("Created Envelope Server returnObject ---->" + returnObject);
+    console.log("Created Envelope Server returnObject id ---->" + returnObject.id);
+    console.log("Created Envelope Server returnObject origin ---->" + returnObject.origin);
+    console.log("Created Envelope Server returnObject type ---->" + returnObject.type);
+
+    return returnObject;
   }, [
     props.editorEnvelopeLocator.targetOrigin,
     props.file.fileExtension,
@@ -125,12 +149,16 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
 
   useEffectAfterFirstRender(() => {
+    console.log("UseEffectAfterFirstRender send locale---->");
     envelopeServer.envelopeApi.notifications.kogitoI18n_localeChange.send(props.locale);
+    console.log("UseEffectAfterFirstRender After ---->");
   }, [props.locale]);
 
   useEffectAfterFirstRender(() => {
+    console.log("UseEffectAfterFirstRender content changed---->");
     props.file.getFileContents().then((content) => {
       envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ content: content! });
+      console.log("UseEffectAfterFirstRender content changed After---->");
     });
   }, [props.file.getFileContents]);
 
@@ -144,17 +172,32 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   useImperativeHandle(
     forwardedRef,
     () => {
+      console.log("Using Emperative Handle gps1");
+
       if (!iframeRef.current) {
+        console.log("Using Emperative Handle gps2");
         return undefined;
       }
+      console.log("Using Emperative Handle gps3");
+
+      console.log("returning.....");
+      console.log("returning.....iframeRef: " + iframeRef);
 
       return {
         iframeRef,
         isReady: isReady,
-        getStateControl: () => stateControl,
-        getEnvelopeServer: () => envelopeServer,
-        getElementPosition: (s) =>
-          envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(s),
+        getStateControl: () => {
+          console.log(":::getStateControl------->");
+          return stateControl;
+        },
+        getEnvelopeServer: () => {
+          console.log(":::getStateControl------->");
+          return envelopeServer;
+        },
+        getElementPosition: (s) => {
+          console.log("Getting Element Position -------->");
+          return envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(s);
+        },
         undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorUndo.send()),
         redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo.send()),
         getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
@@ -179,7 +222,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
         <iframe
           key={envelopeMapping.envelopePath}
           ref={iframeRef}
-          id={"kogito-iframe"}
+          id={someRandomStuff}
           data-testid={"kogito-iframe"}
           src={envelopeMapping.envelopePath}
           title="Kogito editor"

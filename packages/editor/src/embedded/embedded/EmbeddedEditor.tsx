@@ -102,7 +102,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
 
   const someRandomStuff = useMemo(() => {
     console.log("SomeRandomStuff ------>");
-    return "kogito-iiframe";
+    return "kogito-iframe";
   }, []);
   const envelopeServer = useMemo(() => {
     console.log("Creating Envelope Server ---->");

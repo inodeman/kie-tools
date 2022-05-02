@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
+const swfEditor = require("@kie-tools/serverless-workflow-diagram-editor");
+const vscodeJavaCodeCompletionExtensionPlugin = require("@kie-tools/vscode-java-code-completion-extension-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
@@ -48,7 +51,8 @@ module.exports = async (env) => [
   merge(commonConfig(env), {
     target: "web",
     entry: {
-      "webview/ServerlessWorkflowEditorEnvelopeApp": "./src/webview/ServerlessWorkflowEditorEnvelopeApp.ts",
+      "webview/ServerlessWorkflowDiagramEditorEnvelopeApp":
+        "./src/webview/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
     },
     plugins: [
       new MonacoWebpackPlugin({
@@ -61,6 +65,20 @@ module.exports = async (env) => [
               id: "monaco-yaml/yamlWorker",
               entry: "monaco-yaml/lib/esm/yaml.worker",
             },
+          },
+        ],
+      }),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: swfEditor.swEditorPath(),
+            to: "webview/editors/serverless-workflow-diagram",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          {
+            from: vscodeJavaCodeCompletionExtensionPlugin.path(),
+            to: "server/",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
           },
         ],
       }),

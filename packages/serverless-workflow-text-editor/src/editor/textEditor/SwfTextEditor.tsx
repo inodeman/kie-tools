@@ -26,7 +26,7 @@ import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
-import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor/dist/api";
+import { ServerlessWorkflowEditorChannelApi } from "../../api";
 
 interface Props {
   content: string;

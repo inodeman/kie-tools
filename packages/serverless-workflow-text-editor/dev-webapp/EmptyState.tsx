@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from "react";
-import { ChangeEvent } from "react";
 
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import {
   EmptyState,
   EmptyStateBody,
@@ -25,10 +22,14 @@ import {
   EmptyStateSecondaryActions,
   EmptyStateVariant,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import * as React from "react";
+import { ChangeEvent } from "react";
+import { ServerlessWorkflowType } from "./App";
 
 interface NewProps {
-  newContent: (type: string) => void;
+  newContent: (type: ServerlessWorkflowType) => void;
 }
 
 interface UploadProps {

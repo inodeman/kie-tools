@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useEffect, useRef, useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import "./HistoryButtons.scss";
 
 export enum Theme {
@@ -28,11 +28,11 @@ export enum Theme {
 }
 
 interface HistoryButtonsProps {
-  undo: () => void;
-  redo: () => void;
+  undo: () => Promise<void>;
+  redo: () => Promise<void>;
   get: () => Promise<string>;
-  setTheme: (theme: Theme) => void;
-  validate: () => void;
+  setTheme: (theme: Theme) => Promise<void>;
+  validate: () => Promise<void>;
 }
 
 export const HistoryButtons = (props: HistoryButtonsProps) => {
@@ -94,7 +94,7 @@ const ServerlessWorkflowModal = (props: { get: () => Promise<string> }) => {
         }
       });
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, props]);
 
   return (
     <React.Fragment>

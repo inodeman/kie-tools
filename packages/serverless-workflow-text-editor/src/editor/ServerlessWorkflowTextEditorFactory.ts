@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-.history-buttons {
-  padding: 5px 5px 0 5px;
-  width: 100%;
-  background-color: white;
+import {
+  Editor,
+  EditorFactory,
+  EditorInitArgs,
+  KogitoEditorEnvelopeContextType,
+} from "@kie-tools-core/editor/dist/api";
+import { ServerlessWorkflowEditorChannelApi } from "../api";
+import { ServerlessWorkflowTextEditorView } from "./ServerlessWorkflowTextEditorView";
 
-  &__divider {
-    margin-top: 5px;
-  }
-
-  &__theme-switch {
-    padding-top: 5px;
+export class ServerlessWorkflowTextEditorFactory implements EditorFactory<Editor, ServerlessWorkflowEditorChannelApi> {
+  public async createEditor(
+    ctx: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>,
+    initArgs: EditorInitArgs
+  ) {
+    return new ServerlessWorkflowTextEditorView(ctx, initArgs);
   }
 }

@@ -15,3 +15,5 @@
  */
 
 export * from "./editor/textEditor";
+export * from "./editor";
+export * from "./api";

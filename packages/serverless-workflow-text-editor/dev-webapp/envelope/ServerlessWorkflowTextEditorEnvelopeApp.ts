@@ -15,23 +15,10 @@
  */
 
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
-import {
-  ServerlessWorkflowEditorChannelApi,
-  ServerlessWorkflowEditorEnvelopeApi,
-} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
-import {
-  ServerlessWorkflowEditor,
-  ServerlessWorkflowEditorEnvelopeApiImpl,
-} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope";
+import { ServerlessWorkflowTextEditorFactory } from "../../src";
 
-EditorEnvelope.initCustom<
-  ServerlessWorkflowEditor,
-  ServerlessWorkflowEditorEnvelopeApi,
-  ServerlessWorkflowEditorChannelApi
->({
-  container: document.getElementById("envelope-app")!,
+EditorEnvelope.init({
+  container: document.getElementById("text-envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
-  apiImplFactory: {
-    create: (args) => new ServerlessWorkflowEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }),
-  },
+  editorFactory: new ServerlessWorkflowTextEditorFactory(),
 });

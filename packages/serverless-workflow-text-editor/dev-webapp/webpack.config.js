@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,10 @@ module.exports = (env) =>
     mode: "development",
     entry: {
       index: path.resolve(__dirname, "./index.tsx"),
-      "serverless-workflow-envelope": path.resolve(__dirname, "./ServerlessWorkflowEditorEnvelopeApp.ts"),
+      "serverless-workflow-text-envelope": path.resolve(
+        __dirname,
+        "./envelope/ServerlessWorkflowTextEditorEnvelopeApp.ts"
+      ),
     },
     output: {
       path: path.resolve("../dist-dev"),
@@ -36,18 +39,16 @@ module.exports = (env) =>
     plugins: [
       new CopyPlugin({
         patterns: [
-          { from: path.resolve(__dirname, "./static/resources"), to: "./resources" },
           { from: path.resolve(__dirname, "./static/index.html"), to: "./index.html" },
           { from: path.resolve(__dirname, "./static/favicon.ico"), to: "./favicon.ico" },
-          { from: path.resolve(__dirname, "../static/images"), to: "./images" },
           {
             from: swEditor.swEditorPath(),
             to: "./gwt-editors/serverless-workflow",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: path.resolve(__dirname, "./static/envelope/serverless-workflow-envelope.html"),
-            to: "./serverless-workflow-envelope.html",
+            from: path.resolve(__dirname, "./static/envelope/serverless-workflow-text-envelope.html"),
+            to: "./serverless-workflow-text-envelope.html",
           },
         ],
       }),
@@ -93,6 +94,6 @@ module.exports = (env) =>
       historyApiFallback: true,
       static: [{ directory: path.join(__dirname) }],
       compress: true,
-      port: buildEnv.serverlessWorkflowEditor.dev.port,
+      port: buildEnv.serverlessWorkflowCombinedEditor.dev.port,
     },
   });

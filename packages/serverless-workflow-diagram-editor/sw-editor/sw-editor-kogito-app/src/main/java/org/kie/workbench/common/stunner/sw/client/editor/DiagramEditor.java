@@ -63,7 +63,7 @@ public class DiagramEditor {
     }
 
     public void onStartup(final PlaceRequest place) {
-        stunnerEditor.setReadOnly(false);
+        stunnerEditor.setReadOnly(true);
     }
 
     public void onOpen() {

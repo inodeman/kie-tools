@@ -467,5 +467,60 @@
 
   </build>
 
+  <profiles>
+    <!-- As Dev Profile but also including Source Maps in the assembled webapp. -->
+    <profile>
+      <id>sources</id>
+      <activation>
+        <property>
+          <name>sources</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <module>org.kie.workbench.common.stunner.sw.KogitoSWEditorWithSourceMap</module>
+              <saveSource>true</saveSource>
+              <logLevel>INFO</logLevel>
+              <optimizationLevel>0</optimizationLevel>
+              <draftCompile>true</draftCompile>
+              <style>PRETTY</style>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-source-maps</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>war</goal>
+                </goals>
+                <configuration>
+                  <webResources>
+                    <resource>
+                      <directory>${basedir}/target/extra/org.kie.workbench.common.stunner.sw.KogitoSWEditor/src</directory>
+                      <targetPath>sourcemaps</targetPath>
+                    </resource>
+                    <resource>
+                      <directory>${basedir}/target/extra/org.kie.workbench.common.stunner.sw.KogitoSWEditor/symbolMaps</directory>
+                      <includes>
+                        <include>*.json</include>
+                      </includes>
+                      <targetPath>sourcemaps</targetPath>
+                    </resource>
+                  </webResources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

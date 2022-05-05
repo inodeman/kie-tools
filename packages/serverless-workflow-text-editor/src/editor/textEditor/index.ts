@@ -14,7 +14,5 @@
  * limitations under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
-
 export * from "./SwfTextEditor";
 export * from "./SwfTextEditorController";

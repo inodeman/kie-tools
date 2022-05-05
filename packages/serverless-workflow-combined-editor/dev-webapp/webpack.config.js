@@ -55,8 +55,8 @@ module.exports = (env) =>
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: path.resolve(__dirname, "./static/envelope/serverless-workflow-text-envelope.html"),
-            to: "./serverless-workflow-text-envelope.html",
+            from: path.resolve(__dirname, "./static/envelope/serverless-workflow-text-editor-envelope.html"),
+            to: "./serverless-workflow-text-editor-envelope.html",
           },
           {
             from: path.resolve(__dirname, "./static/envelope/serverless-workflow-diagram-envelope.html"),

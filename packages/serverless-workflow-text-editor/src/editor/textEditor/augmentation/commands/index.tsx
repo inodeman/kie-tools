@@ -2,7 +2,6 @@ import { editor, Position } from "monaco-editor";
 import * as React from "react";
 import { openWidget } from "../widgets";
 import { ServerlessWorkflowEditorChannelApi } from "../../../../api";
-
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import {
   SwfLanguageServiceCommandArgs,

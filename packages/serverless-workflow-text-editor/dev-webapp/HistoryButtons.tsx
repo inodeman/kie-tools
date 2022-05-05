@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
@@ -22,21 +23,16 @@ import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import "./HistoryButtons.scss";
 
-export enum Theme {
-  LIGHT,
-  DARK,
-}
-
 interface HistoryButtonsProps {
   undo: () => Promise<void>;
   redo: () => Promise<void>;
   get: () => Promise<string>;
-  setTheme: (theme: Theme) => Promise<void>;
+  setTheme: (theme: EditorTheme) => Promise<void>;
   validate: () => Promise<void>;
 }
 
 export const HistoryButtons = (props: HistoryButtonsProps) => {
-  const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
+  const [theme, setTheme] = useState<EditorTheme>(EditorTheme.LIGHT);
 
   return (
     <div className="history-buttons ignore-onclickoutside">
@@ -64,10 +60,10 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
             id="theme"
             label="Dark"
             labelOff="Light"
-            checked={theme === Theme.DARK}
+            checked={theme === EditorTheme.DARK}
             onChange={(checked) => {
-              setTheme(checked ? Theme.DARK : Theme.LIGHT);
-              props.setTheme(checked ? Theme.DARK : Theme.LIGHT);
+              setTheme(checked ? EditorTheme.DARK : EditorTheme.LIGHT);
+              props.setTheme(checked ? EditorTheme.DARK : EditorTheme.LIGHT);
             }}
           />
         </SplitItem>

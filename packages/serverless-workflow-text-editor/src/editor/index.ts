@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
-import "./style.css";
-
+export * from "./textEditor";
 export * from "./ServerlessWorkflowTextEditor";
 export * from "./ServerlessWorkflowTextEditorFactory";
 export * from "./ServerlessWorkflowTextEditorView";

@@ -21,14 +21,13 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const buildEnv = require("@kie-tools/build-env");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
-const swEditor = require("@kie-tools/serverless-workflow-diagram-editor");
 
 module.exports = (env) =>
   merge(common(env), {
     mode: "development",
     entry: {
       index: path.resolve(__dirname, "./index.tsx"),
-      "serverless-workflow-text-envelope": path.resolve(
+      "serverless-workflow-text-editor-envelope": path.resolve(
         __dirname,
         "./envelope/ServerlessWorkflowTextEditorEnvelopeApp.ts"
       ),
@@ -42,13 +41,8 @@ module.exports = (env) =>
           { from: path.resolve(__dirname, "./static/index.html"), to: "./index.html" },
           { from: path.resolve(__dirname, "./static/favicon.ico"), to: "./favicon.ico" },
           {
-            from: swEditor.swEditorPath(),
-            to: "./gwt-editors/serverless-workflow",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
-          },
-          {
-            from: path.resolve(__dirname, "./static/envelope/serverless-workflow-text-envelope.html"),
-            to: "./serverless-workflow-text-envelope.html",
+            from: path.resolve(__dirname, "./static/envelope/serverless-workflow-text-editor-envelope.html"),
+            to: "./serverless-workflow-text-editor-envelope.html",
           },
         ],
       }),
@@ -73,27 +67,14 @@ module.exports = (env) =>
           enforce: "pre",
           use: ["source-map-loader"],
         },
-        /*{
-          test: /node_modules[\\|/]@severlessworkflow[\\|/]sdk-typescript[\\|/]umd[\\|/]index\.umd\.js$/,
-          use: ["umd-compat-loader"]
-        },*/
         ...patternflyBase.webpackModuleRules,
       ],
     },
     ignoreWarnings: [/Failed to parse source map/],
-    resolve: {
-      alias: {
-        // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
-        // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kie-tools-core/monaco-editor`. This way, everything works as expected.
-        //"monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
-        //"@severlessworkflow/sdk-typescript/lib/definitions/workflow": require.resolve("@severlessworkflow/sdk-typescript")
-      },
-    },
     devServer: {
       historyApiFallback: true,
       static: [{ directory: path.join(__dirname) }],
       compress: true,
-      port: buildEnv.serverlessWorkflowCombinedEditor.dev.port,
+      port: buildEnv.serverlessWorkflowTextEditor.dev.port,
     },
   });

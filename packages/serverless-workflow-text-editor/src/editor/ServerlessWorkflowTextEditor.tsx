@@ -13,37 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-  DrawerPanelBody,
-  DrawerPanelContent,
-} from "@patternfly/react-core/dist/js/components/Drawer";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { SwfTextEditorApi, SwfTextEditorOperation } from "../editor/textEditor/SwfTextEditorController";
 import { SwfTextEditor } from "../editor/textEditor/SwfTextEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { editor } from "monaco-editor";
-import "../../static/css/editor.css";
 
 interface Props {
   /**
@@ -90,9 +67,6 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
   Props
 > = (props, forwardedRef) => {
   const [initialContent, setInitialContent] = useState<ServerlessWorkflowEditorContent | undefined>(undefined);
-  const [isSwfDiagramEditorOutOfSync, setSwfDiagramEditorOutOfSync] = useState<boolean>(false);
-  const swfDiagramEditorContainerRef = useRef<HTMLDivElement>(null);
-  const swfDiagramEditorHiddenContainerRef = useRef<HTMLDivElement>(null);
   const swfTextEditorRef = useRef<SwfTextEditorApi>(null);
 
   useImperativeHandle(
@@ -115,16 +89,7 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
           return Promise.resolve(swfTextEditorRef.current?.getContent() || "");
         },
         getPreview: (): Promise<string> => {
-          swfDiagramEditorHiddenContainerRef.current!.innerHTML = swfDiagramEditorContainerRef.current!.innerHTML;
-          swfDiagramEditorHiddenContainerRef.current!.getElementsByTagName("svg")[0].removeAttribute("style");
-
-          // Remove zoom controls from SVG
-          swfDiagramEditorHiddenContainerRef.current!.getElementsByTagName("svg")[0].lastChild?.remove();
-
-          // Line breaks replaced due to https://github.com/mermaid-js/mermaid/issues/1766
-          const svgContent = swfDiagramEditorHiddenContainerRef.current!.innerHTML.replaceAll("<br>", "<br/>");
-
-          return Promise.resolve(svgContent);
+          return Promise.resolve("");
         },
         undo: (): Promise<void> => {
           return swfTextEditorRef.current?.undo() || Promise.resolve();
@@ -162,10 +127,6 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
     props.setNotifications(initialContent.path, notifications);
   };
 
-  const updateDiagram = useCallback((newContent: string) => {
-    console.log("Diagram Update...");
-  }, []);
-
   const isVscode = useCallback(() => {
     return props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB;
   }, [props.channelType]);
@@ -189,45 +150,24 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
           props.onStateControlCommandUpdate(StateControlCommand.REDO);
           break;
       }
-      // setTimeout necessary for now because monaco does not have a callback for the undo/redo methods
-      setTimeout(() => {
-        updateDiagram(swfTextEditorRef.current!.getContent());
-      }, 100);
     },
-    [props, isVscode, updateDiagram]
-  );
-
-  useEffect(() => {
-    if (initialContent !== undefined) {
-      updateDiagram(initialContent.originalContent);
-    }
-  }, [initialContent, updateDiagram]);
-
-  const swfTextEditor = useMemo(
-    () =>
-      initialContent && (
-        <SwfTextEditor
-          channelType={props.channelType}
-          content={initialContent.originalContent}
-          fileName={initialContent.path}
-          onContentChange={onContentChanged}
-          setValidationErrors={setValidationErrors}
-          ref={swfTextEditorRef}
-          isReadOnly={props.isReadOnly}
-        />
-      ),
-    [initialContent, props.channelType, onContentChanged, setValidationErrors]
+    [props, isVscode]
   );
 
   return (
     <>
-      {isVscode() || (
-        <Drawer isExpanded={true} isInline={true}>
-          <DrawerContent panelContent={<></>}>
-            <DrawerContentBody style={{ overflowY: "hidden" }}>{swfTextEditor}</DrawerContentBody>
-          </DrawerContent>
-        </Drawer>
-      )}
+      {isVscode() ||
+        (initialContent && (
+          <SwfTextEditor
+            channelType={props.channelType}
+            content={initialContent.originalContent}
+            fileName={initialContent.path}
+            onContentChange={onContentChanged}
+            setValidationErrors={setValidationErrors}
+            ref={swfTextEditorRef}
+            isReadOnly={props.isReadOnly}
+          />
+        ))}
     </>
   );
 };

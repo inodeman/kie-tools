@@ -18,7 +18,7 @@ import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 import { ServerlessWorkflowTextEditorFactory } from "../../src";
 
 EditorEnvelope.init({
-  container: document.getElementById("text-envelope-app")!,
+  container: document.getElementById("envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
   editorFactory: new ServerlessWorkflowTextEditorFactory(),
 });

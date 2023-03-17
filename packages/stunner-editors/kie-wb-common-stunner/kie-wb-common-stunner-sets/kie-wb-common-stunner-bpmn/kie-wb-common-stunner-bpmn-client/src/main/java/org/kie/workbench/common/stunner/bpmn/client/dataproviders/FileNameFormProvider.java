@@ -121,10 +121,10 @@ public class FileNameFormProvider implements SelectorDataProvider {
     }
 
     public void fetchFile(String fileName) {
-
         resourceContentService
                 .get(fileName)
                 .then(content -> {
+                    // this should be moved to BusinessRuleTaskChangeHandler
                     namespace = DMNParsingUtils.parseNamespace(content);
                     decisionName = DMNParsingUtils.parseDecisionName(content);
                     dmnModelName = DMNParsingUtils.parseDMNModelName(content);
@@ -152,7 +152,7 @@ public class FileNameFormProvider implements SelectorDataProvider {
     public void onFormFieldChanged(@Observes FormFieldChanged formFieldChanged) {
 
         String fileName = formFieldChanged.getValue().toString();
-        final String fileNameFieldName = BusinessRuleTask.EXECUTION_SET + "." + BusinessRuleTaskExecutionSet.FILE_NAME;
+        final String fileNameFieldName = "fial" + BusinessRuleTask.EXECUTION_SET + "." + BusinessRuleTaskExecutionSet.FILE_NAME;
 
         if (!Objects.equals(formFieldChanged.getName(), fileNameFieldName)) {
             return;
@@ -161,7 +161,7 @@ public class FileNameFormProvider implements SelectorDataProvider {
         if (fileNames.get(fileName) != null) {
             fetchFile(fileName);
         } else {
-            // Reset Fields for a new typed filename
+            // This should be moved to BusinessRuleTaskChangeHandler
             namespace = "";
             decisionName.clear();
             dmnModelName = "";

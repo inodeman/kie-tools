@@ -151,10 +151,6 @@ public class FormsCanvasSessionHandler {
     public boolean executeUpdateProperty(final Element<? extends Definition<?>> element,
                                          final String fieldName,
                                          final Object value) {
-
-        if (fieldName.equals("executionSet.fileName")) { // Special Condition to enable DMN Auto population on BusinessRuleTask
-            fileNameElementSetterEvent.fire( new FileNameElementSetterEvent(element));
-        }
         return execute(commandFactory.updatePropertyValue(element, fieldName, value), canvasListener);
     }
 
